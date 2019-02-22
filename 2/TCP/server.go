@@ -14,6 +14,7 @@ func (s *Server) Listen() {
 	if e != nil {
 		panic(e)
 	}
+	//每一个连接创建一个goroutine去处理
 	for {
 		c, e := l.Accept()
 		if e != nil {

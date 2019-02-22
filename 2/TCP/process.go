@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+//从字节流中读出key值
 func (s *Server) readKey(r *bufio.Reader) (string, error) {
 	klen, err := readLen(r)
 	if err != nil {
@@ -23,6 +24,7 @@ func (s *Server) readKey(r *bufio.Reader) (string, error) {
 	return string(k), nil
 }
 
+//从字节流中读出key和value值
 func (s *Server) readKeyAndValue(r *bufio.Reader) (string, []byte, error) {
 	klen, err := readLen(r)
 	if err != nil {
@@ -45,6 +47,7 @@ func (s *Server) readKeyAndValue(r *bufio.Reader) (string, []byte, error) {
 	return string(k), v, nil
 }
 
+//从流中读入直到遇到第一个空格或者文件结束
 func readLen(r *bufio.Reader) (int, error) {
 	tmp, err := r.ReadString(' ')
 	if err != nil {
@@ -57,6 +60,7 @@ func readLen(r *bufio.Reader) (int, error) {
 	return l, nil
 }
 
+//回应客户端
 func sendResponse(value []byte, err error, conn net.Conn) error {
 	if err != nil {
 		errString := err.Error()
@@ -94,11 +98,12 @@ func (s *Server) del(conn net.Conn, r *bufio.Reader) error {
 	return sendResponse(nil, s.Del(k), conn)
 }
 
+//安装不同的指令进行不同的操作
 func (s *Server) process(conn net.Conn) {
 	defer conn.Close()
 	r := bufio.NewReader(conn)
 	for {
-		op, e := r.ReadByte()
+		op, e := r.ReadByte() //读取一个字节的操作符号
 		if e != nil {
 			if e != io.EOF {
 				log.Println("close connection due to error")

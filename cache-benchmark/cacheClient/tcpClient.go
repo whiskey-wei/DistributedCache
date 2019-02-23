@@ -69,6 +69,7 @@ func (c *tcpClient) recvResponse() (string, error) {
 	return string(value), nil
 }
 
+//普通发送，发送一条消息接受一个回复
 func (c *tcpClient) Run(cmd *Cmd) {
 	if cmd.Name == "get" {
 		c.sendGet(cmd.Key)
@@ -109,6 +110,7 @@ func (c *tcpClient) PipelinedRun(cmds []*Cmd) {
 	}
 }
 
+//连接服务器
 func newTCPClient(server string) *tcpClient {
 	c, e := net.Dial("tcp", server+":12346")
 	if e != nil {

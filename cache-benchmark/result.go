@@ -7,6 +7,12 @@ type statistic struct {
 	time  time.Duration
 }
 
+/*
+  getCount,setCount,missCount分别记录get，set，以及get没有找到对应
+ 结果的次数;
+  statBuckets的下标表示这个bucket中操作花费时间的上限，statisti记录操
+ 作的时间与花费的总时间
+*/
 type result struct {
 	getCount    int
 	missCount   int

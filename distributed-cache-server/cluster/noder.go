@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"io/ioutil"
+	"log"
 	"time"
 
 	"github.com/hashicorp/memberlist"
@@ -39,10 +40,12 @@ func New(addr string, cluster string) (Node, error) {
 	if e != nil {
 		return nil, e
 	}
+
 	circle := consistent.New()
 	circle.NumberOfReplicas = 256
 	go func() {
 		for {
+			//每隔一秒扫描集群中存在的节点，重新构建哈希环
 			m := l.Members()
 			nodes := make([]string, len(m))
 			for i, n := range m {
@@ -50,7 +53,9 @@ func New(addr string, cluster string) (Node, error) {
 			}
 			circle.Set(nodes)
 			time.Sleep(time.Second)
+			//log.Println(nodes)
 		}
 	}()
+	log.Println("cluster join")
 	return &node{circle, addr}, nil
 }

@@ -17,6 +17,7 @@ type inMemoryCache struct {
 func (c *inMemoryCache) Set(k string, v []byte) error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
+	log.Println("Set:", k, " ", v)
 	tmp, exist := c.c[k]
 	if exist {
 		c.del(k, tmp)
@@ -29,12 +30,14 @@ func (c *inMemoryCache) Set(k string, v []byte) error {
 func (c *inMemoryCache) Get(k string) ([]byte, error) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
+	log.Println("Get:", k)
 	return c.c[k], nil
 }
 
 func (c *inMemoryCache) Del(k string) error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
+	log.Println("Del:", k)
 	v, exist := c.c[k]
 	if exist {
 		delete(c.c, k)
